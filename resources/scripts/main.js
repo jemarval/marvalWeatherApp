@@ -26,10 +26,10 @@ let today = new Date();
 
 //Get location
 //Coordinates (Default, Providencia)
-let lat = -33.42;
-let long = -70.60;
+/* let lat = -33.42;
+let long = -70.60; */
 
-const getLocation = async () => {
+const getLocation = () => {
     const geoOptions = {
         enableHighAccuracy: true,
         timeout: 5000,
@@ -38,8 +38,13 @@ const getLocation = async () => {
 
     const geoSuccess = (pos) => {
         const coord = pos.coords
-        lat = coord.latitude;
-        long = coord.longitude;
+        let lat = coord.latitude;
+        let long = coord.longitude;
+        console.log(lat, long);
+        const coordinatesUrl = `latitude=${lat}&longitude=${long}`;
+        const geoCodingUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&appid=b637ed3a09b8583db87b829016165aea`;
+        getWeather(coordinatesUrl)
+        getAddress(geoCodingUrl) 
     }
 
     const geoError = (err) => {
@@ -51,9 +56,9 @@ const getLocation = async () => {
 
 //GetAddress
 
-const geoCodingUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&appid=b637ed3a09b8583db87b829016165aea`;
+/* const geoCodingUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${long}&appid=b637ed3a09b8583db87b829016165aea`; */
 
-const getAddress = async () => {
+const getAddress = async (geoCodingUrl) => {
     try {
         const response = await fetch(geoCodingUrl);
         if (response.ok) {
@@ -69,14 +74,15 @@ const getAddress = async () => {
 //Get weather
 
 const weatherCallUrl = 'https://api.open-meteo.com/v1/forecast?';
-const coordinatesUrl = `latitude=${lat}&longitude=${long}`;
+/* const coordinatesUrl = `latitude=${lat}&longitude=${long}`; */
 const optionsUrl = '&hourly=temperature_2m,relativehumidity_2m,precipitation_probability,weathercode,windspeed_10m,uv_index&current_weather=true'
-const endpoint = `${weatherCallUrl}${coordinatesUrl}${optionsUrl}`
+
 
 /* Options at https://open-meteo.com/en/docs#latitude=-33.42&longitude=-70.60&hourly=temperature_2m,relativehumidity_2m,precipitation_probability,weathercode,windspeed_10m,uv_index&current_weather=true */
 
-const getWeather = async () => {
-  const weatherEndpoint = ""
+const getWeather = async (coordinatesUrl) => {
+    const endpoint = `${weatherCallUrl}${coordinatesUrl}${optionsUrl}`
+    console.log(endpoint)
   try {
     const response = await fetch(endpoint);
     if (response.ok) {
@@ -150,6 +156,7 @@ const getWeather = async () => {
 const weatherButton = document.querySelector('#weatherButton');
 
 
-locationButton.addEventListener('click', getLocation());
+/* locationButton.addEventListener('click', getLocation());
 getWeather()
-getAddress()
+getAddress() */
+getLocation()
